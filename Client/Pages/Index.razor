@@ -1,0 +1,135 @@
+﻿@page "/"
+
+<SfGantt DataSource="@TaskCollection" ProjectStartDate="@ProjectStart" ProjectEndDate="@ProjectEnd" Height="369px" Width="1170px"
+         WorkWeek="@( new String[]{ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday" })" HighlightWeekends="true"
+         TaskMode="ScheduleMode.Custom" ValidateManualTasksOnLinking="true">
+
+    <GanttTaskFields Id="TaskId" Name="TaskName" StartDate="StartDate" EndDate="EndDate"
+                     Duration="Duration" Progress="Progress" ParentID="ParentId" Dependency="Predecessor" Manual="IsManual">
+    </GanttTaskFields>
+
+    <GanttColumns>
+        <GanttColumn Field="TaskId" Width="65" />
+        <GanttColumn Field="TaskName" Width="135" />
+        <GanttColumn Field="IsManual" Width="100" />
+        <GanttColumn Field="Duration" Width="85" />
+        <GanttColumn Field="StartDate" Width="93" />
+        <GanttColumn Field="Progress" Width="90" />
+    </GanttColumns>
+
+    <GanttHolidays>
+        <GanttHoliday From="@(new DateTime(2022, 03, 28))" Label="Public holiday" CssClass="e-custom-holiday"></GanttHoliday>
+        <GanttHoliday From="@(new DateTime(2022, 04, 06))" To="@(new DateTime(2022, 04, 07))" Label="Public holidays"
+                      CssClass="e-custom-holiday"></GanttHoliday>
+    </GanttHolidays>
+
+    <GanttDayWorkingTimeCollection>
+        <GanttDayWorkingTime From="9" To="18"></GanttDayWorkingTime>
+    </GanttDayWorkingTimeCollection>
+
+    <GanttEditSettings AllowEditing="true" AllowTaskbarEditing="true"></GanttEditSettings>
+    <GanttSplitterSettings Position="40%"></GanttSplitterSettings>
+
+</SfGantt>
+
+@code {
+    public List<TaskData> TaskCollection { get; set; }
+    public DateTime ProjectStart = new DateTime(2022, 03, 28);
+    public DateTime ProjectEnd = new DateTime(2022, 04, 18);
+
+    protected override void OnInitialized()
+    {
+        this.TaskCollection = GetTaskCollection();
+    }
+
+    public class TaskData
+    {
+        public int TaskId { get; set; }
+        public string TaskName { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+        public string Duration { get; set; }
+        public int Progress { get; set; }
+        public string Predecessor { get; set; }
+        public int? ParentId { get; set; }
+        public string IsManual { get; set; }
+    }
+
+    public static List<TaskData> GetTaskCollection()
+    {
+        List<TaskData> Tasks = new List<TaskData>() {
+            new TaskData() {
+                TaskId = 1,
+                TaskName = "Project initiation",
+                StartDate = new DateTime(2022, 03, 28),
+                EndDate = new DateTime(2022, 07, 28),
+                Duration="4"
+            },
+            new TaskData() {
+                TaskId = 2,
+                TaskName = "Identify Site location",
+                StartDate = new DateTime(2022, 03, 29),
+                Progress = 30,
+                ParentId = 1,
+                Duration="2",
+                IsManual = "true"
+            },
+            new TaskData() {
+                TaskId = 3,
+                TaskName = "Perform soil test",
+                StartDate = new DateTime(2022, 03, 29),
+                ParentId = 1,
+                Duration="4",
+                IsManual="true"
+            },
+            new TaskData() {
+                TaskId = 4,
+                TaskName = "Soil test approval",
+                StartDate = new DateTime(2022, 03, 29),
+                Duration = "1",
+                Progress = 30,
+                ParentId = 1
+            },
+            new TaskData() {
+                TaskId = 5,
+                TaskName = "Project estimation",
+                StartDate = new DateTime(2022, 03, 29),
+                EndDate = new DateTime(2022, 04, 2),
+                Duration="4",
+                IsManual="true"
+            },
+            new TaskData() {
+                TaskId = 6,
+                TaskName = "Develop floor plan for estimation",
+                StartDate = new DateTime(2022, 03, 29),
+                Duration = "3",
+                Progress = 30,
+                ParentId = 5
+            },
+            new TaskData() {
+                TaskId = 7,
+                TaskName = "List materials",
+                StartDate = new DateTime(2022, 04, 01),
+                Duration = "3",
+                Progress = 30,
+                ParentId = 5
+            },
+            new TaskData() {
+                TaskId = 8,
+                TaskName = "Estimation approval",
+                StartDate = new DateTime(2022, 04, 01),
+                Duration = "2",
+                ParentId = 5,
+                IsManual="true"
+            }
+        };
+        return Tasks;
+    }
+}
+
+<style>
+    .e-gantt .e-gantt-chart .e-custom-holiday {
+        background-color: #e82869;
+        font-weight: bold;
+    }
+</style>
